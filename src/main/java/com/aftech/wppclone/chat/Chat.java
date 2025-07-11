@@ -1,4 +1,4 @@
-package chat;
+package com.aftech.wppclone.chat;
 
 import com.aftech.wppclone.common.BaseAuditingEntity;
 import com.aftech.wppclone.message.Message;

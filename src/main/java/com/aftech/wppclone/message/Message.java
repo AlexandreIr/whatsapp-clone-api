@@ -1,6 +1,6 @@
 package com.aftech.wppclone.message;
 
-import chat.Chat;
+import com.aftech.wppclone.chat.Chat;
 import com.aftech.wppclone.common.BaseAuditingEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
