@@ -30,13 +30,12 @@ public class Message extends BaseAuditingEntity {
     private MessageState state;
     @Enumerated(EnumType.STRING)
     private MessageType type;
-
     @ManyToOne
     @JoinColumn(name = "chat_id")
     private Chat chat;
-
     @Column(nullable = false, name = "sender_id")
     private String senderId;
     @Column(nullable = false, name = "receiver_id")
     private String receiverId;
+    private String mediaFilePath;
 }
