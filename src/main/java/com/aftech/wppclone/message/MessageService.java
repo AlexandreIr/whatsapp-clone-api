@@ -3,6 +3,10 @@ package com.aftech.wppclone.message;
 import com.aftech.wppclone.chat.Chat;
 import com.aftech.wppclone.chat.ChatRepository;
 import com.aftech.wppclone.file.FileService;
+import com.aftech.wppclone.file.FileUtils;
+import com.aftech.wppclone.notification.Notification;
+import com.aftech.wppclone.notification.NotificationService;
+import com.aftech.wppclone.notification.NotificationType;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,7 @@ public class MessageService {
     private final ChatRepository chatRepository;
     private final Messagemapper mapper;
     private final FileService fileService;
+    private final NotificationService notificationService;
 
     public void saveMessage(MessageRequest messageRequest){
         Chat chat = chatRepository.findById(messageRequest.getChatId())
@@ -34,7 +39,16 @@ public class MessageService {
 
         messageRepository.save(message);
 
-        //todo notification
+        Notification notification = Notification.builder()
+                .chatId(chat.getId())
+                .messageType(messageRequest.getType())
+                .content(messageRequest.getContent())
+                .senderId(messageRequest.getSenderId())
+                .receiverId(messageRequest.getReceiverId())
+                .type(NotificationType.MESSAGE)
+                .chatName(chat.getChatName(messageRequest.getSenderId()))
+                .build();
+        notificationService.sendNotification(messageRequest.getReceiverId(), notification);
     }
 
     public List<MessageResponse> findChatMessages(String chatId){
@@ -49,11 +63,17 @@ public class MessageService {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(()-> new EntityNotFoundException("Chat not found"));
 
-        //final String recipientId = getRecipientId(chat, authentication);
+        final String recipientId = getRecipientId(chat, authentication);
 
         messageRepository.setMessagesToSeenByChatId(chat.getId(), MessageState.SEEN);
 
-        //TODO notification system
+        Notification notification = Notification.builder()
+                .chatId(chat.getId())
+                .senderId(getSenderId(chat, authentication))
+                .receiverId(recipientId)
+                .type(NotificationType.SEEN)
+                .build();
+        notificationService.sendNotification(recipientId, notification);
     }
 
     public void uploadMediaMessage(String chatId, MultipartFile file, Authentication authentication){
@@ -75,7 +95,15 @@ public class MessageService {
 
         messageRepository.save(message);
 
-        //TODO notification
+        Notification notification = Notification.builder()
+                .chatId(chat.getId())
+                .messageType(MessageType.IMAGE)
+                .senderId(senderId)
+                .receiverId(receiverId)
+                .type(NotificationType.IMAGE)
+                .media(FileUtils.readFileFromLocation(filePath))
+                .build();
+        notificationService.sendNotification(receiverId, notification);
 
     }
 
