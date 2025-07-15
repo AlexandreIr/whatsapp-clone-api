@@ -21,12 +21,13 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain springSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req->
-                        req.requestMatchers(
+                        req.requestMatchers( "/auth/**",
+                                        "/v2/api-docs",
                                         "/v3/api-docs",
                                         "/v3/api-docs/**",
                                         "/swagger-resources",
@@ -34,6 +35,7 @@ public class SecurityConfig {
                                         "/configuration/ui",
                                         "/configuration/security",
                                         "/swagger-ui/**",
+                                        "/swagger-ui/index.html",
                                         "/webjars/**",
                                         "/swagger-ui.html",
                                         "/ws/**")

@@ -18,9 +18,9 @@ import java.util.List;
 @NamedQuery(name = UserConstants.FIND_USER_BY_EMAIL,
         query = "SELECT u FROM User u WHERE u.email = :email")
 @NamedQuery(name = UserConstants.FIND_ALL_USERS_EXCEPT_SELF,
-            query = "SELECT u FROM User u WHERE u.id!= :publicId")
+            query = "SELECT u FROM User u WHERE u.id != :publicId")
 @NamedQuery(name = UserConstants.FIND_USER_BY_PUBLIC_ID,
-            query = "SELECT u FROM User u WHERE u.id= :publicID")
+            query = "SELECT u FROM User u WHERE u.id = :publicID")
 public class User extends BaseAuditingEntity {
 
     private static final long LAST_ACTIVE_INTERVAL = 5;

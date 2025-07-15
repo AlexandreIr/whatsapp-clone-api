@@ -20,7 +20,7 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<ChatResponse> getChatsByReceiverId(Authentication authentication){
-        final String userId = currentUser.getName();
+        final String userId = authentication.getName();
         return chatRepository.findChatBySenderId(userId)
                 .stream()
                 .map(c-> mapper.toChatResponse(c, userId)).toList();
