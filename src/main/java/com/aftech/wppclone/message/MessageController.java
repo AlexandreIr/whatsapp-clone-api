@@ -40,7 +40,7 @@ public class MessageController {
     }
 
     @GetMapping("/chat/{chat-id}")
-    public ResponseEntity<List<MessageResponse>> findChatMessages(
+    public ResponseEntity<List<MessageResponse>> getMessages(
             @PathVariable("chat-id") String chatId){
         return ResponseEntity.ok(messageService.findChatMessages(chatId));
     }
